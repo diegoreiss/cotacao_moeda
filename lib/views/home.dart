@@ -1,6 +1,7 @@
 // https://api.flutter.dev/flutter/widgets/GestureDetector-class.html
 
 import 'package:cotacao_moeda/services/cotacao_service.dart';
+import 'package:cotacao_moeda/views/favorites.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -14,11 +15,22 @@ class _HomeState extends State<Home> {
   TextEditingController textEditingController = TextEditingController();
   List favoritos = [];
 
+  gotoViewFavoritos() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Favorites(favoritos: favoritos,),
+      )
+    );
+  }
+
   void addFavorito(fav) {
-    if (!favoritos.contains(fav)) {
-      print('adicionado: ${fav}');
-      favoritos.add(fav);
-    }
+    setState(() {
+      if (favoritos.contains(fav))
+        favoritos.remove(fav);
+      else
+        favoritos.add(fav);
+    });
   }
 
   void filtrar(filtro) {
@@ -27,7 +39,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    var scaffold = Scaffold(
       appBar: AppBar(
         title: Text('Home: Moedas'),
       ),
@@ -71,15 +83,147 @@ class _HomeState extends State<Home> {
                                     '${moeda["code"]}-${moeda["codein"]}'),
                                 child: Card(
                                   child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
+                                          SizedBox(
+                                            height: 10,
+                                          ),
                                           Padding(
                                             padding: EdgeInsets.symmetric(
-                                                horizontal: 5),
+                                                horizontal: 10),
                                             child: Text('${moeda['name']}'),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                            ),
+                                            child: Text(
+                                                '${moeda['code']}-${moeda['codein']}'),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Maior Valor: ',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text('${moeda['high']}'),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Menor Valor: ',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text('${moeda['low']}'),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Variação: ',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text('${moeda['varBid']}')
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Variação Percentual: ',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text('${moeda['pctChange']}%')
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Preço de Compra: ',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text('${moeda['bid']}')
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Preço de Venda: ',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text('${moeda['ask']}')
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Data de atualização: ',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text('${moeda['create_date']}')
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
                                           )
                                         ],
+                                      ),
+                                      Icon(
+                                        favoritos.contains(
+                                                '${moeda['code']}-${moeda['codein']}')
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: Colors.cyan,
                                       )
                                     ],
                                   ),
@@ -88,9 +232,16 @@ class _HomeState extends State<Home> {
                             );
                           });
                     }
-                  }))
+                  })),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: gotoViewFavoritos,
+        backgroundColor: Colors.cyan,
+        child: Icon(Icons.star),
+      )
     );
+
+    return scaffold;
   }
 }
