@@ -67,7 +67,7 @@ class _HomeState extends State<Home> {
                       List<String> moedasIndex = snapshot.data.keys.toList();
                       List<String> moedasFiltro = moedasIndex
                           .where((moeda) =>
-                              moeda.contains(textEditingController.text))
+                              moeda.contains(textEditingController.text.toUpperCase()))
                           .toList();
 
                       return ListView.builder(
